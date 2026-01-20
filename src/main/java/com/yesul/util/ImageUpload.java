@@ -12,47 +12,62 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-
 @Service
 @RequiredArgsConstructor
 public class ImageUpload {
+
     private final S3Client s3Client;
 
-    @Value("${ncp.objectstorage.endpoint}")
-    private String endpoint;
-
-    @Value("${ncp.objectstorage.bucket}")
+    @Value("${aws.s3.bucket}")
     private String bucket;
+
+    @Value("${aws.s3.region}")
+    private String region;
 
     public String uploadAndGetUrl(String domain, MultipartFile file) {
         String key = String.format("%s/image/%s",
                 domain,
                 file.getOriginalFilename());
+
         try {
-            PutObjectRequest req = PutObjectRequest.builder()
+            PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .acl(ObjectCannedACL.PUBLIC_READ)
+                    .contentType(file.getContentType())
                     .build();
-            s3Client.putObject(req, RequestBody.fromBytes(file.getBytes()));
+
+            s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
+
             return getUrl(key);
+
         } catch (IOException e) {
-            throw new RuntimeException("이미지 업로드 실패", e);
+            throw new RuntimeException("AWS S3 이미지 업로드 실패", e);
         }
     }
 
     private String getUrl(String key) {
-        return String.format("%s/%s/%s", endpoint, bucket, key);
+        return String.format(
+                "https://%s.s3.%s.amazonaws.com/%s",
+                bucket,
+                region,
+                key
+        );
     }
 
-    public void delete(String imageUrl, String domain) {
+    public void delete(String imageUrl) {
         try {
-            String baseUrl = String.format("%s/%s/", endpoint, bucket);
+            String baseUrl = String.format(
+                    "https://%s.s3.%s.amazonaws.com/",
+                    bucket,
+                    region
+            );
+
             if (!imageUrl.startsWith(baseUrl)) {
                 throw new RuntimeException("잘못된 이미지 URL입니다: " + imageUrl);
             }
+
             String key = imageUrl.substring(baseUrl.length());
-            System.out.println("NCP 이미지 삭제 요청: bucket=" + bucket + ", key=" + key);
 
             DeleteObjectRequest request = DeleteObjectRequest.builder()
                     .bucket(bucket)
@@ -60,11 +75,9 @@ public class ImageUpload {
                     .build();
 
             s3Client.deleteObject(request);
-            System.out.println("NCP 이미지 삭제 성공: " + imageUrl);
 
         } catch (Exception e) {
-            System.err.println("이미지 삭제 실패: " + imageUrl + " (" + e.getMessage() + ")");
-            throw new RuntimeException("이미지 삭제 실패: " + imageUrl, e);
+            throw new RuntimeException("AWS S3 이미지 삭제 실패: " + imageUrl, e);
         }
     }
 }

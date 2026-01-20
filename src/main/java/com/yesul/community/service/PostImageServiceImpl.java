@@ -29,7 +29,7 @@ public class PostImageServiceImpl implements PostImageService {
     @Override
     public void deleteImage(String imageUrl) {
         try {
-            imageUpload.delete(imageUrl, "community"); // 올바른 순서: imageUrl, domain
+            imageUpload.delete(imageUrl); // 올바른 순서: imageUrl, domain
             System.out.println("NCP에서 삭제 완료: " + imageUrl);
         } catch (Exception e) {
             System.err.println("NCP 이미지 삭제 실패: " + imageUrl + " (" + e.getMessage() + ")");
