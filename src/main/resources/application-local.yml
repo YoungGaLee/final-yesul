@@ -2,8 +2,8 @@ spring:
   # 로컬 개발용 데이터베이스 설정
   datasource:
     url: jdbc:mysql://localhost:3306/yesul_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:your-localdb-password}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:

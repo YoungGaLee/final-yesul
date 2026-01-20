@@ -103,17 +103,16 @@ springdoc:
 
 app:
   image-upload:
-    mode: ncp
+    mode: aws
     local-dir: upload-dir
     base-url: /images/
 
-ncp:
-  objectstorage:
-    endpoint: https://kr.object.ncloudstorage.com
-    region: kr-standard
-    bucket: ${NCP_BUCKET}
-    access_key: ${NCP_ACCESS_KEY}
-    secret_key: ${NCP_SECRET_KEY}
+aws:
+  s3:
+    region: ap-northeast-2
+    bucket: ${AWS_S3_BUCKET}
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
 
 google:
   client-id: ${GOOGLE_CLIENT_ID}
