@@ -243,3 +243,10 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,git,gradle,macos,windows
 .idea/
+
+
+# Spring Boot application config
+/src/main/resources/application-local.yml
+/src/main/resources/application-dev.yml
+
+.env
