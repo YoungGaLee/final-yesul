@@ -3,7 +3,7 @@ spring:
     name: yesul
 
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:local}
 
   jpa:
     database: mysql
@@ -117,4 +117,4 @@ aws:
 google:
   client-id: ${GOOGLE_CLIENT_ID}
   client-secret: ${GOOGLE_CLIENT_SECRET}
-  redirect-uri: https://yesul.shop/admin/event/oauth2/callback
+  redirect-uri: https://yesul.younggalee.com/admin/event/oauth2/callback
